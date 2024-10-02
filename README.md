@@ -12,6 +12,7 @@ This Spring Boot application enables users to authenticate through multiple iden
 - 🧑‍🏫 **Spring Validation**: Utilizes **Spring Validation annotations** (`@NotNull`, `@Email`, etc.) to ensure valid user input.
 - 📚 **RESTful API**: Provides REST-compliant endpoints for managing user login, registration, and error responses.
 - 🔧 **Maven-Based**: All dependencies and project management are handled through Maven for straightforward configuration.
+- 📚 **Docker Support**: Easily deploy and run the application in a containerized environment using Docker, simplifying setup and scaling.
 
 **Technologies Used:**
 - **Spring Boot**
