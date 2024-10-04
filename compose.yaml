@@ -1,35 +1,9 @@
 services:
   postgres:
-    container_name: postgres
-    image: 'postgres:alpine'
+    image: 'postgres:latest'
     environment:
-      POSTGRES_DB: multilogin
-      POSTGRES_USER: secret
-      POSTGRES_PASSWORD: secret
-      PGDATA: /data/postgres
-    volumes:
-      - postgres:/data/postgres
+      - 'POSTGRES_DB=mydatabase'
+      - 'POSTGRES_PASSWORD=secret'
+      - 'POSTGRES_USER=myuser'
     ports:
-      - '5432:5432'
-    networks:
-      - postgres
-    restart: unless-stopped
-
-
-  adminer:
-    image: adminer
-    restart: unless-stopped
-    volumes:
-      - adminer:/var/lib/adminer
-    ports:
-      - '8888:8080'
-    networks:
-      - postgres
-
-networks:
-  postgres:
-    driver: bridge
-
-volumes:
-  postgres:
-  adminer:
+      - '5432'
