@@ -1,35 +1,23 @@
-services:
-  postgres:
-    container_name: postgres
-    image: 'postgres:alpine'
-    environment:
-      POSTGRES_DB: multilogin
-      POSTGRES_USER: secret
-      POSTGRES_PASSWORD: secret
-      PGDATA: /data/postgres
-    volumes:
-      - postgres:/data/postgres
-    ports:
-      - '5432:5432'
-    networks:
-      - postgres
-    restart: unless-stopped
+spring:
+  application:
+    name: multi-login
 
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/multilogin
+    username: secret
+    password: 'secret'
 
-  adminer:
-    image: adminer
-    restart: unless-stopped
-    volumes:
-      - adminer:/var/lib/adminer
-    ports:
-      - '8888:8080'
-    networks:
-      - postgres
-
-networks:
-  postgres:
-    driver: bridge
-
-volumes:
-  postgres:
-  adminer:
+logging:
+  file:
+    name: logs/application.log
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n"
+  level:
+    org:
+      project:
+        multilogin: INFO
+  logback:
+    rollingpolicy:
+      max-history: 7
+      max-file-size: 10MB
