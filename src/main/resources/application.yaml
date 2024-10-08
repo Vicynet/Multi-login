@@ -2,11 +2,19 @@ spring:
   application:
     name: multi-login
 
+  profiles:
+    active: dev
+
   datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/multilogin
-    username: secret
-    password: 'secret'
+    hikari:
+      maximum-pool-size: 30
+      driver-class-name: org.postgresql.Driver
+      jdbc-url: jdbc:postgresql://localhost:5432/multilogin  # Fixed typo
+      username: secret
+      password: 'secret'
+      connectionTimeout: 30000
+      idleTimeout: 600000
+      maxLifetime: 1800000
 
 logging:
   file:
@@ -17,6 +25,12 @@ logging:
     org:
       project:
         multilogin: INFO
+      springframework:
+        jdbc: DEBUG
+    com:
+      zaxxer:
+        hikari: DEBUG
+
   logback:
     rollingpolicy:
       max-history: 7
