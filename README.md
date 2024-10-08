@@ -6,7 +6,7 @@ This Spring Boot application enables users to authenticate through multiple iden
 **Features:**
 - 🌟 **Multi-Login Authentication**: Supports user login using **username**, **email**, or **phone number**, along with a password for secure authentication.
 - 🔒 **Spring Security Integration**: Implements Spring Security to protect your application with customizable authentication and authorization.
-- 🧰 **Spring Data JDBC**: Uses **Spring Data JDBC** for efficient database management and simpler CRUD operations, ideal for projects without ORM.
+- 🧰 **Spring Data JDBC**: Uses **Spring Data JDBC** for efficient database management and simpler CRUD operations, ideal for projects without ORM. DONE ✅
 - 🛠 **AOP and Logging**: Leverages **Aspect-Oriented Programming (AOP)** for modular cross-cutting concerns like logging and monitoring. DONE ✅
 - ❌ **Global Exception Handling**: Customizes error responses across the entire application using **Spring’s @ControllerAdvice** for consistent and informative error handling. DONE ✅
 - 🧑‍🏫 **Spring Validation**: Utilizes **Spring Validation annotations** (`@NotNull`, `@Email`, etc.) to ensure valid user input.
@@ -17,7 +17,7 @@ This Spring Boot application enables users to authenticate through multiple iden
 **Technologies Used:**
 - **Spring Boot**
 - **Spring Security**
-- **Spring Data JDBC** (for database interactions)
+- **Spring Data JDBC** (for database interactions, support for multiple datasource)
 - **PostgreSQL**
 - **Maven**
 - **Aspect** (for AOP)
