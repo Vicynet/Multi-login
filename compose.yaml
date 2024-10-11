@@ -1,22 +1,39 @@
 services:
-  postgres:
-    container_name: postgres
+  multi-login-write:
+    container_name: multi-login-write
     image: 'postgres:alpine'
     environment:
-      POSTGRES_DB: multilogin
+      POSTGRES_DB: multi-login-write
       POSTGRES_USER: secret
       POSTGRES_PASSWORD: secret
-      PGDATA: /data/postgres
+      PGDATA: /data/multi-login-write
     volumes:
-      - postgres:/data/postgres
+      - multi-login-write:/data/multi-login-write
     ports:
       - '5432:5432'
     networks:
       - postgres
     restart: unless-stopped
 
+  multi-login-read:
+    container_name: multi-login-read
+    image: 'postgres:alpine'
+    environment:
+      POSTGRES_DB: multi-login-read
+      POSTGRES_USER: secret
+      POSTGRES_PASSWORD: secret
+      PGDATA: /data/multi-login-read
+    volumes:
+      - multi-login-read:/data/multi-login-read
+    ports:
+      - '5433:5432'
+    networks:
+      - postgres
+    restart: unless-stopped
+
 
   adminer:
+    container_name: adminer
     image: adminer
     restart: unless-stopped
     volumes:
@@ -31,5 +48,6 @@ networks:
     driver: bridge
 
 volumes:
-  postgres:
+  multi-login-write:
+  multi-login-read:
   adminer:
