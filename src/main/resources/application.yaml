@@ -6,19 +6,44 @@ spring:
     active: dev
 
   datasource:
-    hikari:
-      maximum-pool-size: 30
-      driver-class-name: org.postgresql.Driver
-      jdbc-url: jdbc:postgresql://localhost:5432/multilogin  # Fixed typo
-      username: secret
-      password: 'secret'
-      connectionTimeout: 30000
-      idleTimeout: 600000
-      maxLifetime: 1800000
+    write:
+      hikari:
+        maximum-pool-size: 30
+        driver-class-name: org.postgresql.Driver
+        jdbc-url: jdbc:postgresql://localhost:5432/multi-login-write
+        username: secret
+        password: 'secret'
+        connectionTimeout: 30000
+        idleTimeout: 600000
+        maxLifetime: 1800000
+    read:
+      hikari:
+        maximum-pool-size: 30
+        driver-class-name: org.postgresql.Driver
+        jdbc-url: jdbc:postgresql://localhost:5433/multi-login-read
+        username: secret
+        password: 'secret'
+        connectionTimeout: 30000
+        idleTimeout: 600000
+        maxLifetime: 1800000
 
   flyway:
-    enabled: true
-    locations: classpath:db/migration/{vendor}
+    enabled: false
+#    write:
+#      enabled: true
+#      locations: classpath:db/migration/{vendor}
+#      url: jdbc:postgresql://localhost:5432/multi-login-write
+#      user: secret
+#      password: secret
+#    read:
+#      enabled: true
+#      locations: classpath:db/migration/{vendor}
+#      url: jdbc:postgresql://localhost:5432/multi-login-read
+#      user: secret
+#      password: secret
+
+
+
 
 server:
   error:
