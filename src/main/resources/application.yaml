@@ -5,6 +5,11 @@ spring:
   profiles:
     active: dev
 
+  security:
+    user:
+      name: prometheus
+      password: prometheus
+
   datasource:
     write:
       hikari:
@@ -39,6 +44,10 @@ info:
     docs: https://github.com/Vicynet/Multi-login
 
 management:
+  prometheus:
+    metrics:
+      export:
+        enabled: true
   endpoint:
     health:
       show-details: always
@@ -52,7 +61,7 @@ management:
     web:
       base-path: /observe
       exposure:
-        include: health,info,metrics,mappings
+        include: health,info,metrics,loggers,prometheus
   metrics:
     distribution:
       percentiles-histogram:

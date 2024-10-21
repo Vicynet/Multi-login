@@ -1,0 +1,116 @@
+groups:
+  - name: 'application-alerts'
+    rules:
+      - alert: HighCPULoad
+        expr: (rate(process_cpu_seconds_total{job="multi-login"}[1m]) * 100) > 80
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High CPU Load on {{ $labels.instance }}"
+          description: "CPU load is over 80% on instance {{ $labels.instance }} for more than 2 minutes."
+
+      - alert: HighRequestLatency
+        expr: rate(http_server_requests_seconds_sum{job="multi-login"}[1m]) / rate(http_server_requests_seconds_count{job="multi-login"}[1m]) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High Request Latency on {{ $labels.instance }}"
+          description: "HTTP request latency is above 500ms for the last 5 minutes on {{ $labels.instance }}."
+
+      - alert: ApplicationDown
+        expr: up{job="multi-login"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Application Down"
+          description: "Spring Boot application is down for more than 1 minute on {{ $labels.instance }}."
+
+      - alert: UnsuccessfulRequests
+        expr: increase(http_server_requests_seconds_count{job="multi-login", status=~"5.."}[1m]) / increase(http_server_requests_seconds_count{job="multi-login"}[1m]) > 0.01
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "5xx Errors Detected"
+          description: "HTTP 5xx errors exceed 1% of total requests in the last 5 minutes on {{ $labels.instance }}."
+
+  - name: 'system-health-alerts'
+    rules:
+      - alert: NodeDiskSpaceUsage
+        expr: (node_filesystem_avail_bytes{job="prometheus"} / node_filesystem_size_bytes{job="prometheus"}) < 0.15
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Disk Space Usage Warning on {{ $labels.instance }}"
+          description: "Disk space usage is above 85% for the last 10 minutes on {{ $labels.instance }}."
+
+      - alert: NodeHighLoad
+        expr: (rate(node_load1{job="prometheus"}[1m]) / node_cpu_cores{job="prometheus"}) > 0.85
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High CPU Load on {{ $labels.instance }}"
+          description: "CPU load is above 85% for the last 5 minutes on {{ $labels.instance }}."
+
+  - name: 'database-alerts'
+    rules:
+      - alert: HighPostgresConnections
+        expr: pg_stat_activity_count{job="postgres-exporter"} / pg_settings_max_connections{job="postgres-exporter"} > 0.85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High PostgreSQL Connections on {{ $labels.instance }}"
+          description: "PostgreSQL connections are above 85% of the maximum limit for the last 5 minutes on {{ $labels.instance }}."
+
+      - alert: PostgresDiskSpace
+        expr: (pg_data_size_bytes{job="postgres-exporter"} / pg_disk_total_bytes{job="postgres-exporter"}) > 0.9
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "PostgreSQL Disk Space Usage on {{ $labels.instance }}"
+          description: "Disk space usage is above 90% for the last 5 minutes on {{ $labels.instance }}."
+
+  - name: 'memory-alerts'
+    rules:
+      - alert: HighMemoryUsage
+        expr: (process_resident_memory_bytes{job="multi-login"} / process_virtual_memory_bytes{job="multi-login"}) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High Memory Usage on {{ $labels.instance }}"
+          description: "Memory usage is above 80% for the last 5 minutes on {{ $labels.instance }}."
+
+      - alert: JVMOutOfMemory
+        expr: jvm_memory_used_bytes{job="multi-login"} > (jvm_memory_max_bytes{job="multi-login"} * 0.85)
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "JVM Out of Memory on {{ $labels.instance }}"
+          description: "JVM memory usage is above 85% on {{ $labels.instance }} for more than 1 minute."
+
+      - alert: ThreadPoolSaturation
+        expr: jvm_threads_live{job="multi-login"} > (jvm_threads_peak{job="multi-login"} * 0.9)
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Thread Pool Saturation on {{ $labels.instance }}"
+          description: "Thread pool utilization is above 90% for more than 5 minutes on {{ $labels.instance }}."
+
+      - alert: GarbageCollectionTime
+        expr: rate(jvm_gc_pause_seconds_sum{job="multi-login"}[1m]) > 2
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Excessive Garbage Collection on {{ $labels.instance }}"
+          description: "Garbage collection pause time is greater than 2 seconds for more than 1 minute."
