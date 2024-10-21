@@ -1,0 +1,17 @@
+{
+	"ulid": "01JANW37NPG0D21BG1TPJN8790",
+	"minTime": 1729447281668,
+	"maxTime": 1729454400000,
+	"stats": {
+		"numSamples": 627383,
+		"numSeries": 2751,
+		"numChunks": 6876
+	},
+	"compaction": {
+		"level": 1,
+		"sources": [
+			"01JANW37NPG0D21BG1TPJN8790"
+		]
+	},
+	"version": 1
+}
