@@ -7,11 +7,9 @@ import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.project.multilogin.model.LogModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import java.util.Arrays;
 
 @Aspect
 @Component
@@ -26,9 +24,9 @@ public class LoggingAdvice {
     public Object logMethodExecutionEntryAndExit(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         String methodName = proceedingJoinPoint.getSignature().getName();
         String className = proceedingJoinPoint.getTarget().getClass().getSimpleName();
-        Object[] args = proceedingJoinPoint.getArgs();
+        Object[] arguments = proceedingJoinPoint.getArgs();
 
-        logEntry(className, methodName, args);
+        logEntry(className, methodName, arguments);
 
         Object result = proceedingJoinPoint.proceed();
 
@@ -37,55 +35,32 @@ public class LoggingAdvice {
         return result;
     }
 
-    private void logEntry(String className, String methodName, Object[] args) {
+    private void logEntry(String className, String methodName, Object[] arguments) {
         try {
-            LogModel entryLogModel = new LogModel(className, methodName, args);
-            logger.info("Log Entry: {}", objectMapper.writeValueAsString(entryLogModel));
+            logger.info("Log Entry: Class: {}, Method: {}, Args: {}", className, methodName, objectMapper.writeValueAsString(arguments));
         } catch (JsonProcessingException e) {
-            logger.error("Failed to serialize entry log for {}.{}: {}", className, methodName, e.getMessage());
-            logger.info("Log Entry: Class: {}, Method: {}, Args: {}", className, methodName, Arrays.toString(args));
+            logger.error("Failed to serialize entry log for Class: {}, Method: {}, Error Message: {}", className, methodName, e.getMessage());
         }
     }
 
     private void logExit(String className, String methodName, Object result) {
         try {
             if (result != null) {
-                LogModel exitLogModel = new LogModel(className, methodName, result);
-                logger.info("Log Exit: {}", objectMapper.writeValueAsString(exitLogModel));
+                logger.info("Log Exit: Class: {}, Method: {}, Args: {}", className, methodName, objectMapper.writeValueAsString(result));
             } else {
-                logger.info("Log Exit: {} - {}: method returned void or null", className, methodName);
+                logger.info("Log Exit: Class: {}, Method: {}: method returned void or null", className, methodName);
             }
         } catch (JsonProcessingException e) {
-            logger.error("Failed to serialize exit log for {}.{}: {}", className, methodName, e.getMessage());
-            logger.info("Log Exit: Class: {}, Method: {}, Result: {}", className, methodName, result);
+            logger.error("Failed to serialize exit log for Class: {}, Method: {}, Exception Message: {}", className, methodName, e.getMessage());
         }
     }
-
-
 
     @AfterThrowing(pointcut = "logPointCut()", throwing = "exception")
     public void logExceptions(JoinPoint joinPoint, Throwable exception) {
         String methodName = joinPoint.getSignature().getName();
         String className = joinPoint.getTarget().getClass().getSimpleName();
-        Object[] args = joinPoint.getArgs();
+        Object[] arguments = joinPoint.getArgs();
 
-        LogModel exceptionLogModel = new LogModel(className, methodName, args);
-        logger.error("Log Global Exception in {} - {}: {}", className, methodName, exception.getMessage());
-        try {
-            logger.error("Exception details: {}", toJson(exceptionLogModel), exception);
-        } catch (Exception e) {
-            logger.error("Failed to serialize exception log for {}.{}: {}", className, methodName, e.getMessage());
-            logger.info("Log Exception : Class: {}, Method: {}, Result: {}", className, methodName, args);
-        }
-    }
-
-
-    private String toJson(Object object) {
-        try {
-            return objectMapper.writeValueAsString(object);
-        } catch (JsonProcessingException e) {
-            logger.error("JSON processing error: {}", e.getMessage());
-            return "Unable to serialize to JSON";  // Fallback message in case of failure
-        }
+        logger.error("Global Exception Log in - Class: {}, Method: {}, Exception Message: {}, Args: {}", className, methodName, exception.getMessage(), arguments);
     }
 }
